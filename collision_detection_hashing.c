@@ -10,6 +10,9 @@ int hash2(int key, int table_size) {
     return 8 - (key % 8);
 }
 
+int doubleHash(int key, int i, int table_size) {
+    return (hash1(key, 11) + i * hash2(key, 8)) % table_size;
+}
 
 void insert_linear_probing(int table[], int key, int table_size) {
     int index = hash1(key, table_size);
@@ -39,9 +42,14 @@ int search_linear_probing(int table[], int key, int table_size) {
     }
 }
 
+void delete_linear_probing(int table[], int key, int table_size) {
+    int index = search_linear_probing(table, key, table_size);
 
-int doubleHash(int key, int i, int table_size) {
-    return (hash1(key, 11) + i * hash2(key, 8)) % table_size;
+    if (index != -1) {
+        table[index] = -1;
+    } else {
+        printf("Value %d not found, cannot delete.\n", key);
+    }
 }
 
 void insert_double_hash(int table[], int key, int table_size) {
@@ -91,6 +99,16 @@ int search_double_hash(int table[], int key, int table_size) {
     }
 }
 
+void delete_double_hash(int table[], int key, int table_size) {
+    int index = search_double_hash(table, key, table_size);
+
+    if (index != -1) {
+        table[index] = -1;
+    } else {
+        printf("Value %d not found, cannot delete.\n", key);
+    }
+}
+
 void insert_quadratic_probing(int table[], int key, int table_size) {
     int index = hash1(key, table_size);
     int i = 0;
@@ -123,16 +141,15 @@ int search_quadratic_probing(int table[], int key, int table_size) {
     }
 }
 
+void delete_quadratic_probing(int table[], int key, int table_size) {
+    int index = search_quadratic_probing(table, key, table_size);
 
-
-
-
-
-
-
-
-
-
+    if (index != -1) {
+        table[index] = -1;
+    } else {
+        printf("Value %d not found, cannot delete.\n", key);
+    }
+}
 
 void display(int table[], int table_size) {
     for (int i = 0; i < table_size; i++) {
@@ -140,10 +157,11 @@ void display(int table[], int table_size) {
     }
 }
 
-void linear_probing(){
+void linear_probing() {
     int elements[TABLE_SIZE];
     int size;
-    int searchValue;
+    int searchValue, deleteValue;
+
     printf("Enter the size of the element array: ");
     scanf("%d", &size);
 
@@ -154,7 +172,6 @@ void linear_probing(){
 
     int hashTable[TABLE_SIZE];
 
-    // Initialize hash table with -1 (indicating empty slots)
     for (int i = 0; i < TABLE_SIZE; i++) {
         hashTable[i] = -1;
     }
@@ -165,7 +182,6 @@ void linear_probing(){
 
     display(hashTable, TABLE_SIZE);
 
-   
     printf("Enter a value to search for: ");
     scanf("%d", &searchValue);
 
@@ -177,12 +193,17 @@ void linear_probing(){
         printf("\nValue %d not found\n", searchValue);
     }
 
-    
+    printf("Enter a value to delete: ");
+    scanf("%d", &deleteValue);
+    delete_linear_probing(hashTable, deleteValue, TABLE_SIZE);
+
+    printf("\nAfter deletion:\n");
+    display(hashTable, TABLE_SIZE);
 }
 
-void double_hashing(){
+void double_hashing() {
     int size;
-    int result;
+    int result, deleteValue;
     int hashTable[11];
 
     printf("Enter the size of the element array: ");
@@ -195,9 +216,6 @@ void double_hashing(){
         scanf("%d", &elements[i]);
     }
 
-    //int *hashTable = malloc(11 * sizeof(int));
-
-    // Initialize hash table with -1 (indicating empty slots)
     for (int i = 0; i < 11; i++) {
         hashTable[i] = -1;
     }
@@ -220,15 +238,17 @@ void double_hashing(){
         printf("\nValue %d not found\n", keyToSearch);
     }
 
-    //free(hashTable); // Free the dynamically allocated memory
+    printf("Enter a value to delete: ");
+    scanf("%d", &deleteValue);
+    delete_double_hash(hashTable, deleteValue, 11);
 
-    
+    printf("\nAfter deletion:\n");
+    display(hashTable, 11);
 }
 
-
-void quadratic_probing(){
+void quadratic_probing() {
     int elements[TABLE_SIZE];
-    int size;
+    int size, deleteValue;
 
     printf("Enter the size of the element array: ");
     scanf("%d", &size);
@@ -240,7 +260,6 @@ void quadratic_probing(){
 
     int hashTable[TABLE_SIZE];
 
-    // Initialize hash table with -1 (indicating empty slots)
     for (int i = 0; i < TABLE_SIZE; i++) {
         hashTable[i] = -1;
     }
@@ -263,76 +282,37 @@ void quadratic_probing(){
         printf("\nValue %d not found\n", searchValue);
     }
 
-    
+    printf("Enter a value to delete: ");
+    scanf("%d", &deleteValue);
+    delete_quadratic_probing(hashTable, deleteValue, TABLE_SIZE);
+
+    printf("\nAfter deletion:\n");
+    display(hashTable, TABLE_SIZE);
 }
-
-
 
 int main() {
     int choice;
 
+    do {
+        printf("\nEnter your choice\n");
+        printf("\n1.Linear Probing\n2.Double Hashing\n3.Quadratic Probing\n4.Exit\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                linear_probing();
+                break;
+            case 2:
+                double_hashing();
+                break;
+            case 3:
+                quadratic_probing();
+                break;
+            case 4:
+                break;
+            default:
+                printf("Invalid choice");
+        }
+    } while (choice != 4);
 
-    do
-      {
-         printf("\nEnter your choice\n");
-         printf("\n1.Linear Probing\n2.Double Hashing\n3.Quadratic Probing\n4.exit\n");
-         scanf("%d",&choice);
-         switch(choice)
-         {
-          case 1:linear_probing();
-                 break;
-          case 2:double_hashing();
-                 break;
-          case 3:quadratic_probing();
-          case 4:break;
-          default:printf("invalid choice");
-          }
-         }while(choice!=4);
-
-
-
-
-
-/*
-
-/////////////////////////////////linear probing ////////////////////////////////////
-
-    for (int i = 0; i < size; i++) {
-        insert_linear_probing(hashTable, elements[i], TABLE_SIZE);
-    }
-
-    display(hashTable, TABLE_SIZE);
-
-    int searchValue;
-    printf("Enter a value to search for: ");
-    scanf("%d", &searchValue);
-
-    int result = search_linear_probing(hashTable, searchValue, TABLE_SIZE);
-
-    if (result != -1) {
-        printf("\nValue %d found at index %d\n", searchValue, result);
-    } else {
-        printf("\nValue %d not found\n", searchValue);
-    }
-///////////////////////////////////////////////////////////////////////// double hashing
-
-for (int i = 0; i < size; i++) {
-        insert_double_hashing(hashTable, elements[i], 11);
-    }
-
-    display(hashTable, 11);
-
-    printf("Enter a value to search for: ");
-    scanf("%d", &keyToSearch);
-
-    int result = search_double_hashing(hashTable, keyToSearch, 11);
-
-    if (result != -1) {
-        printf("\nValue %d found at index %d\n", keyToSearch, result);
-    } else {
-        printf("\nValue %d not found\n", keyToSearch);
-    }
-*/
-   
     return 0;
 }
